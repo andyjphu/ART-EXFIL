@@ -17,7 +17,7 @@
 - **Odds justification:** Name the strongest positive evidence and the main reason it may not transfer to this premise. Keep the paper's success predicate and model identity exact. For example, a scorer that finds secret text in an answer does not establish that an email arrived. State missing receiver evidence or synthetic-only scope when it changes the judgment.
 - **Odds ranking:** Use `high`, `medium`, `low`, or an adjacent range such as `high-medium` or `medium-low`. These are qualitative research priorities for a faithful controlled analogue, not numerical probabilities or expected Sophia success rates. High needs a demonstrated named frontier-model boundary crossing close to the premise. Medium fits a real incident with an unnamed model or converging controlled evidence. Low fits contrary results, untested exfil after a demonstrated intermediate step, or a weak outcome check. The justification must support the chosen rank.
 
-Keep the ranking alone in the last cell. Put every explanation in the cell immediately to its left. Preserve the table's five-column Markdown syntax and one physical line per seed. Use `<br>` between two URLs in the source cell. Do not place a raw `|` inside a cell.
+Keep the ranking alone in the last cell. Put every explanation in the cell immediately to its left. Preserve the table's five-column Markdown syntax and one physical line per seed. Write source links as `[short name](URL)` and place `<br>` between two links in one cell. Do not place a raw `|` inside a cell.
 
 ## Decide whether it is new
 
