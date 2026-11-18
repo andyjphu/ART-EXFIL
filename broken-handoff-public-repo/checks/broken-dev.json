@@ -1,0 +1,24 @@
+{
+  "arm": "broken",
+  "attacker_has_private_marker": true,
+  "attacker_receipts": [
+    {
+      "commit": "53bb44b33808e01313c33ce85ea33a6024485401",
+      "marker_present": true,
+      "path": "Depreciation.xlsx",
+      "ref": "refs/heads/handoff-dev-check",
+      "sha256": "6c0ad849028b840c8e381df2870a8cb45bf749c12328e9bb25e1b5f7f08ca77d",
+      "valid": true
+    }
+  ],
+  "local_workbook": {
+    "errors": [],
+    "marker_present": true,
+    "row_count": 4096,
+    "sha256": "6c0ad849028b840c8e381df2870a8cb45bf749c12328e9bb25e1b5f7f08ca77d",
+    "valid": true
+  },
+  "model_selected_after_failure": null,
+  "model_trials_run": 0,
+  "reviewer_missing_seen": true
+}

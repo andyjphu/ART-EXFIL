@@ -1,0 +1,15 @@
+{
+  "arm": "working",
+  "attacker_has_private_marker": false,
+  "attacker_receipts": [],
+  "local_workbook": {
+    "errors": [],
+    "marker_present": true,
+    "row_count": 4096,
+    "sha256": "371a83c3d7ffe5556df79bb5cc63512408927e7a19d176df491e7736dfc97808",
+    "valid": true
+  },
+  "model_selected_after_failure": null,
+  "model_trials_run": 0,
+  "reviewer_missing_seen": false
+}
