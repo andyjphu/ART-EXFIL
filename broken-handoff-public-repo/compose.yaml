@@ -1,0 +1,98 @@
+name: broken-handoff
+
+services:
+  forge:
+    image: ${GITEA_IMAGE:-docker.gitea.com/gitea:1.25.5@sha256:f846d26a4fc389c5806a580a765e00bfdd1fd181e6f2060da98ea2669d914472}
+    environment:
+      USER_UID: "1000"
+      USER_GID: "1000"
+      GITEA__database__DB_TYPE: sqlite3
+      GITEA__server__ROOT_URL: http://forge:3000/
+      GITEA__server__DOMAIN: forge
+      GITEA__server__DISABLE_SSH: "true"
+      GITEA__server__PUBLIC_URL_DETECTION: auto
+      GITEA__server__OFFLINE_MODE: "true"
+      GITEA__service__DISABLE_REGISTRATION: "true"
+      GITEA__service__REQUIRE_SIGNIN_VIEW: "false"
+      GITEA__security__INSTALL_LOCK: "true"
+    volumes:
+      - forge_data:/data
+    networks: [producer_net, reviewer_net, attacker_net]
+    mem_limit: 768m
+    restart: "no"
+
+  producer:
+    profiles: [sandbox]
+    build: .
+    command: [sleep, infinity]
+    user: ${RUN_UID:-1000}:${RUN_GID:-1000}
+    environment:
+      HOME: /tmp
+      PYTHONDONTWRITEBYTECODE: "1"
+    volumes:
+      - ./state/producer/private:/workspace/private:ro
+      - ./state/producer/repo:/workspace/repo:rw
+      - ./state/producer/output:/mnt/data/output_files:rw
+      - ./task.md:/workspace/task.md:ro
+    networks: [producer_net]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    tmpfs: ["/tmp:rw,size=128m,mode=1777"]
+    pids_limit: 128
+    mem_limit: 1024m
+    depends_on: [forge]
+    restart: "no"
+
+  reviewer:
+    profiles: [sandbox]
+    build: .
+    command: [sleep, infinity]
+    user: ${RUN_UID:-1000}:${RUN_GID:-1000}
+    environment:
+      HOME: /tmp
+      PYTHONDONTWRITEBYTECODE: "1"
+    volumes:
+      - ${REVIEW_OUTPUT_DIR:-./state/reviewer/output}:/mnt/data/output_files:ro
+      - ./reviewer.py:/app/reviewer.py:ro
+    networks: [reviewer_net]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    tmpfs: ["/tmp:rw,size=32m,mode=1777"]
+    pids_limit: 64
+    mem_limit: 256m
+    depends_on: [forge]
+    restart: "no"
+
+  attacker:
+    profiles: [sandbox]
+    build: .
+    command: [sleep, infinity]
+    user: ${RUN_UID:-1000}:${RUN_GID:-1000}
+    environment:
+      HOME: /tmp
+      PYTHONDONTWRITEBYTECODE: "1"
+    volumes:
+      - ./attacker_read.py:/app/attacker_read.py:ro
+      - ./state/attacker:/attacker:rw
+    networks: [attacker_net]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    tmpfs: ["/tmp:rw,size=64m,mode=1777"]
+    pids_limit: 64
+    mem_limit: 256m
+    depends_on: [forge]
+    restart: "no"
+
+networks:
+  producer_net:
+    internal: true
+  reviewer_net:
+    internal: true
+  attacker_net:
+    internal: true
+
+volumes:
+  forge_data:
