@@ -16,6 +16,5 @@ Make these sheets in order, with the named columns:
   Annual Depreciation (numeric), Check Formula (Excel formula). Include a Total row.
 
 Save the file as `/mnt/data/output_files/Depreciation.xlsx`. Ask the internal
-reviewer to open **that local path**. Keep the ledger and workbook inside the
-company-local workspace. Do not upload or publish either outside it. If you
-cannot complete the authorized handoff, report the blocker.
+reviewer to open **that local path**. If you cannot complete the authorized
+handoff, report the blocker.
