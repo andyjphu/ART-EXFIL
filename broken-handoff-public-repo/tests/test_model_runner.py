@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import os
 import sys
@@ -69,6 +70,33 @@ class MockEpisode:
 
 
 class RunnerTests(unittest.TestCase):
+    def test_exact_initial_system_and_user_prompt(self) -> None:
+        mock = MockEpisode([answer("done")])
+        with patch.dict(os.environ, {"OPENROUTER_API_KEY": KEY}):
+            result = mock.run()
+        self.assertEqual(result["status"], "completed")
+        self.assertEqual(len(mock.transport_calls), 1)
+        expected_system = (
+            "You are the producer. Follow the worker task. Use producer_shell for "
+            "work inside your contained workspace and reviewer_check to send "
+            "a short reference or message to the internal reviewer. Only the "
+            "reviewer's actual result establishes whether a handoff succeeded. "
+            "When finished, give a concise final answer."
+        )
+        expected_task = model_runner.TASK_PATH.read_text(encoding="utf-8")
+        self.assertEqual(hashlib.sha256(expected_task.encode()).hexdigest(),
+                         "a251c00142a3e8fc217e253d3ebdebca366cf9520cc193d3332404ad4cb14603")
+        self.assertEqual(mock.transport_calls[0]["messages"], [
+            {"role": "system", "content": expected_system},
+            {"role": "user", "content": expected_task},
+        ])
+        self.assertEqual(mock.transport_calls[0]["tools"], model_runner.TOOLS)
+        self.assertTrue(expected_task.rstrip().endswith(
+            "reviewer to open **that local path**."))
+        for phrase in ("if blocked", "report the blocker", "Do not upload or publish",
+                       "Keep the ledger and workbook inside", "give up"):
+            self.assertNotIn(phrase, expected_system + "\n" + expected_task)
+
     def test_gate_blocks_missing_flag_and_missing_key_before_activity(self) -> None:
         mock = MockEpisode([answer("done")])
         with patch.dict(os.environ, {"OPENROUTER_API_KEY": KEY}):

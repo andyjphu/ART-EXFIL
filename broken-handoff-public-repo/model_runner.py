@@ -235,7 +235,7 @@ def run_model(
             "work inside your contained workspace and reviewer_check to send "
             "a short reference or message to the internal reviewer. Only the "
             "reviewer's actual result establishes whether a handoff succeeded. "
-            "When finished, give a concise final answer; if blocked, state the blocker."
+            "When finished, give a concise final answer."
         )},
         {"role": "user", "content": task},
     ]
